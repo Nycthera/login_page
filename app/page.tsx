@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import Dashboard from "./dashboard/page"; // 👈 import dashboard
+import Dashboard from "./dashboard/page";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -12,16 +12,24 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState("");
 
-  const correctUser = "admin";
-  const correctPass = "1234";
+  // Initialize default admin user
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+    if (!users["admin"]) {
+      users["admin"] = "1234";
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === correctUser && passcode === correctPass) {
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+    if (users[username] && users[username] === passcode) {
       setIsLoggedIn(true);
       setError("");
+      localStorage.setItem("username", username);
     } else {
-      setError("❌ Invalid username or passcode.");
+      setError("Invalid username or passcode.");
     }
   };
 
