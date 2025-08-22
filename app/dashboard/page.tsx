@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 interface DashboardProps {
   username: string;
@@ -16,6 +17,8 @@ export default function Dashboard({ username, onLogout }: DashboardProps) {
   const [message, setMessage] = useState("");
 
   const addNewUser = () => {
+    if (typeof window === "undefined") return;
+
     const users = JSON.parse(localStorage.getItem("users") || "{}");
 
     if (!newUser || !newPass) {
@@ -63,6 +66,11 @@ export default function Dashboard({ username, onLogout }: DashboardProps) {
           )}
 
           <Button onClick={onLogout}>Logout</Button>
+
+          {/* Use asChild so the Button acts as the Link */}
+          <Button asChild>
+            <Link href={`/user-${username}`}>Go to Profile</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>
